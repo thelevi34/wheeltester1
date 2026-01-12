@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheel Library - Popular Racing Wheel Specifications</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #1a1f3a;
+            --bg-tertiary: #252a45;
+            --accent-primary: #00d9ff;
+            --accent-secondary: #0099ff;
+            --text-primary: #ffffff;
+            --text-secondary: #8b92b8;
+            --text-muted: #5a5f7d;
+            --border-color: #2a2f4a;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        body.light-mode {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e8eaf0;
+            --accent-primary: #0099ff;
+            --accent-secondary: #0066cc;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4f6a;
+            --text-muted: #7a7f9a;
+            --border-color: #d0d5e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background: var(--bg-secondary);
+            padding: 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 217, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            height: 70px;
+            position: relative;
+        }
+
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            position: relative;
+            padding: 8px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-logo::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 0;
+            background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
+        }
+
+        .nav-logo:hover::before {
+            height: 100%;
+        }
+
+        .nav-logo:hover {
+            transform: translateX(5px);
+        }
+
+        .nav-logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            white-space: nowrap;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .nav-logo-text .highlight {
+            color: var(--accent-primary);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-link {
+            padding: 10px 24px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(0, 153, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-primary);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-link:hover::before {
+            opacity: 1;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-link.active {
+            color: var(--accent-primary);
+            background: rgba(0, 217, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2), inset 0 0 20px rgba(0, 217, 255, 0.1);
+        }
+
+        .nav-link.active::after {
+            width: 80%;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            display: none;
+        }
+
+        .content-wrapper {
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Filter Sidebar */
+        .filter-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .filter-section {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-option:hover {
+            color: var(--accent-primary);
+        }
+
+        .filter-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent-primary);
+        }
+
+        .filter-option label {
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .filter-count {
+            margin-left: auto;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .clear-filters {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--accent-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .clear-filters:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .results-count {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .results-count span {
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        .wheels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .wheel-card.hidden {
+            display: none;
+        }
+
+        .wheel-card {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .wheel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 217, 255, 0.3);
+        }
+
+        .wheel-card.hidden {
+            display: none;
+        }
+
+        .wheel-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .wheel-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+
+        .wheel-model {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+        }
+
+        .specs-list {
+            list-style: none;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+
+        .spec-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .spec-value {
+            color: var(--text-primary);
+            text-align: left;
+        }
+
+        .price {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--accent-primary);
+            text-align: center;
+        }
+
+        .price-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .price-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            margin-top: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .nav-container {
+                padding: 0 25px;
+                height: 65px;
+            }
+
+            .nav-logo-text {
+                font-size: 1.2rem;
+                letter-spacing: 3px;
+            }
+
+            .nav-links {
+                gap: 6px;
+                padding: 5px;
+            }
+
+            .nav-link {
+                padding: 8px 18px;
+                font-size: 0.85rem;
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+            }
+
+            .filter-sidebar {
+                width: 100%;
+            }
+
+            .wheels-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                height: auto;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+
+            .nav-header {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-logo::before {
+                display: none;
+            }
+
+            .nav-logo-text {
+                font-size: 1.2rem;
+                letter-spacing: 2px;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-link {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
+
+            .wheels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-header">
+                <a href="index.html" class="nav-logo">
+                    <span class="nav-logo-text">WHEEL<span class="highlight">TESTER</span></span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Wheel Tester</a>
+                    <a href="wheel-library.html" class="nav-link active">Wheel Library</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Wheel Library</h1>
+            <p class="subtitle">Specifications of Popular Racing Wheel Models</p>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Filter Sidebar -->
+            <aside class="filter-sidebar">
+                <!-- Brand Filter -->
+                <div class="filter-section">
+                    <div class="filter-title">Brand</div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="brand-logitech" value="Logitech">
+                        <label for="brand-logitech">Logitech</label>
+                        <span class="filter-count" id="count-logitech">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="brand-thrustmaster" value="Thrustmaster">
+                        <label for="brand-thrustmaster">Thrustmaster</label>
+                        <span class="filter-count" id="count-thrustmaster">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="brand-fanatec" value="Fanatec">
+                        <label for="brand-fanatec">Fanatec</label>
+                        <span class="filter-count" id="count-fanatec">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="brand-moza" value="Moza">
+                        <label for="brand-moza">Moza</label>
+                        <span class="filter-count" id="count-moza">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="brand-simagic" value="Simagic">
+                        <label for="brand-simagic">Simagic</label>
+                        <span class="filter-count" id="count-simagic">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="brand-hori" value="Hori">
+                        <label for="brand-hori">Hori</label>
+                        <span class="filter-count" id="count-hori">(0)</span>
+                    </div>
+                </div>
+
+                <!-- Platform Filter -->
+                <div class="filter-section">
+                    <div class="filter-title">Platform</div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="platform-pc" value="PC">
+                        <label for="platform-pc">PC</label>
+                        <span class="filter-count" id="count-pc">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="platform-ps" value="PlayStation">
+                        <label for="platform-ps">PlayStation</label>
+                        <span class="filter-count" id="count-ps">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="platform-xbox" value="Xbox">
+                        <label for="platform-xbox">Xbox</label>
+                        <span class="filter-count" id="count-xbox">(0)</span>
+                    </div>
+                </div>
+
+                <!-- Price Range Filter -->
+                <div class="filter-section">
+                    <div class="filter-title">Price Range</div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="price-budget" value="budget">
+                        <label for="price-budget">Budget ($100-$200)</label>
+                        <span class="filter-count" id="count-budget">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="price-mid" value="mid">
+                        <label for="price-mid">Mid-Range ($200-$400)</label>
+                        <span class="filter-count" id="count-mid">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="price-high" value="high">
+                        <label for="price-high">High-End ($400+)</label>
+                        <span class="filter-count" id="count-high">(0)</span>
+                    </div>
+                </div>
+
+                <!-- Force Feedback Filter -->
+                <div class="filter-section">
+                    <div class="filter-title">Force Feedback</div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="ff-gear" value="Gear-Driven">
+                        <label for="ff-gear">Gear-Driven</label>
+                        <span class="filter-count" id="count-gear">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="ff-belt" value="Belt-Driven">
+                        <label for="ff-belt">Belt-Driven</label>
+                        <span class="filter-count" id="count-belt">(0)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="ff-direct" value="Direct Drive">
+                        <label for="ff-direct">Direct Drive</label>
+                        <span class="filter-count" id="count-direct">(0)</span>
+                    </div>
+                </div>
+
+                <button class="clear-filters" id="clear-filters">Clear All Filters</button>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="results-header">
+                    <div class="results-count">Showing <span id="results-count">0</span> wheels</div>
+                </div>
+
+                <div class="wheels-grid" id="wheels-grid">
+                    <!-- Wheels will be dynamically filtered -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Wheel data
+        const wheels = [
+            // Logitech Wheels
+            { brand: 'Logitech', model: 'G29', platform: ['PlayStation', 'PC'], price: 299, ff: 'Gear-Driven', rotation: '900°', pedals: '3 (Clutch, Brake, Gas)', buttons: '24 Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Logitech', model: 'G920', platform: ['Xbox', 'PC'], price: 299, ff: 'Gear-Driven', rotation: '900°', pedals: '3 (Clutch, Brake, Gas)', buttons: '24 Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Logitech', model: 'G923', platform: ['PlayStation', 'Xbox', 'PC'], price: 399, ff: 'Gear-Driven', rotation: '900°', pedals: '3 (Clutch, Brake, Gas)', buttons: '24 Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Logitech', model: 'G27 (Legacy)', platform: ['PC'], price: 250, ff: 'Gear-Driven', rotation: '900°', pedals: '3 (Clutch, Brake, Gas)', buttons: '16 Buttons', shifter: 'Included', tester: 'Available' },
+            { brand: 'Logitech', model: 'G25 (Legacy)', platform: ['PC'], price: 200, ff: 'Gear-Driven', rotation: '900°', pedals: '3 (Clutch, Brake, Gas)', buttons: '14 Buttons', shifter: 'Included', tester: 'Available' },
+            { brand: 'Logitech', model: 'Driving Force GT', platform: ['PC', 'PlayStation'], price: 150, ff: 'Gear-Driven', rotation: '900°', pedals: '2 (Brake, Gas)', buttons: '24 Buttons', shifter: 'Sequential (Built-in)', tester: 'Available' },
+            { brand: 'Logitech', model: 'Driving Force Pro', platform: ['PC', 'PlayStation'], price: 120, ff: 'Gear-Driven', rotation: '900°', pedals: '2 (Brake, Gas)', buttons: '12 Buttons', shifter: 'No', tester: 'Available' },
+            { brand: 'Logitech', model: 'MOMO Racing', platform: ['PC'], price: 100, ff: 'Gear-Driven', rotation: '270°', pedals: '2 (Brake, Gas)', buttons: '8 Buttons', shifter: 'No', tester: 'Available' },
+            
+            // Thrustmaster Wheels
+            { brand: 'Thrustmaster', model: 'T150', platform: ['PlayStation', 'PC'], price: 199, ff: 'Belt-Driven', rotation: '1080°', pedals: '2 (Brake, Gas)', buttons: '11 Buttons', shifter: 'No', tester: 'Available' },
+            { brand: 'Thrustmaster', model: 'TMX', platform: ['Xbox', 'PC'], price: 199, ff: 'Belt-Driven', rotation: '900°', pedals: '2 (Brake, Gas)', buttons: '12 Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Thrustmaster', model: 'T300 RS', platform: ['PlayStation', 'PC'], price: 399, ff: 'Belt-Driven', rotation: '1080°', pedals: '3 (Clutch, Brake, Gas)', buttons: '13 Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Thrustmaster', model: 'TX', platform: ['Xbox', 'PC'], price: 399, ff: 'Belt-Driven', rotation: '900°', pedals: '2 (Brake, Gas)', buttons: '13 Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Thrustmaster', model: 'T248', platform: ['PlayStation', 'Xbox', 'PC'], price: 349, ff: 'Belt-Driven', rotation: '900°', pedals: '3 (Clutch, Brake, Gas)', buttons: '25 Buttons', shifter: 'Magnetic Paddles', tester: 'Available' },
+            { brand: 'Thrustmaster', model: 'T-GT II', platform: ['PlayStation', 'PC'], price: 699, ff: 'Belt-Driven', rotation: '1080°', pedals: '3 (Load Cell Brake)', buttons: '25 Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Thrustmaster', model: 'TS-XW Racer', platform: ['Xbox', 'PC'], price: 699, ff: 'Belt-Driven', rotation: '1080°', pedals: '3 (Load Cell Brake)', buttons: '15 Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Thrustmaster', model: 'T80', platform: ['PlayStation', 'PC'], price: 99, ff: 'Gear-Driven', rotation: '240°', pedals: '2 (Brake, Gas)', buttons: '11 Buttons', shifter: 'No', tester: 'Available' },
+            { brand: 'Thrustmaster', model: 'T128', platform: ['PlayStation', 'Xbox', 'PC'], price: 249, ff: 'Belt-Driven', rotation: '900°', pedals: '2 (Brake, Gas)', buttons: '13 Buttons', shifter: 'Magnetic Paddles', tester: 'Available' },
+            { brand: 'Thrustmaster', model: 'T500 RS', platform: ['PlayStation', 'PC'], price: 599, ff: 'Belt-Driven', rotation: '1080°', pedals: '3 (Clutch, Brake, Gas)', buttons: '16 Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            
+            // Fanatec Wheels
+            { brand: 'Fanatec', model: 'CSL DD', platform: ['PC', 'PlayStation'], price: 499, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Fanatec', model: 'CSL Elite', platform: ['PC', 'PlayStation', 'Xbox'], price: 599, ff: 'Belt-Driven', rotation: '1080°', pedals: '3 (Load Cell)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Fanatec', model: 'Podium DD1', platform: ['PC', 'PlayStation', 'Xbox'], price: 1299, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Fanatec', model: 'Podium DD2', platform: ['PC', 'PlayStation', 'Xbox'], price: 1499, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Fanatec', model: 'GT DD Pro', platform: ['PC', 'PlayStation'], price: 699, ff: 'Direct Drive', rotation: 'Adjustable', pedals: '3 (Load Cell)', buttons: '20+ Buttons', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Fanatec', model: 'ClubSport V2.5', platform: ['PC', 'PlayStation', 'Xbox'], price: 799, ff: 'Belt-Driven', rotation: '1080°', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            
+            // Hori Wheels
+            { brand: 'Hori', model: 'Racing Wheel Apex', platform: ['PlayStation', 'PC'], price: 99, ff: 'No', rotation: '270°', pedals: '2 (Brake, Gas)', buttons: '14 Buttons', shifter: 'Paddle Shifters', tester: 'Available' },
+            { brand: 'Hori', model: 'Racing Wheel Overdrive', platform: ['Xbox', 'PC'], price: 99, ff: 'No', rotation: '270°', pedals: '2 (Brake, Gas)', buttons: '12 Buttons', shifter: 'Paddle Shifters', tester: 'Available' },
+            
+            // Moza Wheels
+            { brand: 'Moza', model: 'R5', platform: ['PC'], price: 499, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Moza', model: 'R9', platform: ['PC'], price: 699, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Moza', model: 'R12', platform: ['PC'], price: 899, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Moza', model: 'R16', platform: ['PC'], price: 1099, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Moza', model: 'R21', platform: ['PC'], price: 1499, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            
+            // Simagic Wheels
+            { brand: 'Simagic', model: 'Alpha Mini', platform: ['PC'], price: 799, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Simagic', model: 'Alpha', platform: ['PC'], price: 999, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+            { brand: 'Simagic', model: 'Alpha Ultimate', platform: ['PC'], price: 1299, ff: 'Direct Drive', rotation: 'Adjustable', pedals: 'Separate (Optional)', buttons: 'Depends on Wheel', shifter: 'Optional (Separate)', tester: 'Available' },
+        ];
+
+        // Render wheels
+        function renderWheels() {
+            const grid = document.getElementById('wheels-grid');
+            grid.innerHTML = '';
+
+            wheels.forEach(wheel => {
+                const platformStr = wheel.platform.map(p => {
+                    if (p === 'PlayStation') return 'PS4, PS5';
+                    if (p === 'Xbox') return 'Xbox';
+                    if (p === 'PC') return 'PC';
+                    return p;
+                }).join(', ');
+
+                const card = document.createElement('div');
+                card.className = 'wheel-card';
+                card.dataset.brand = wheel.brand;
+                card.dataset.platform = wheel.platform.join(',');
+                card.dataset.price = wheel.price;
+                card.dataset.ff = wheel.ff;
+
+                card.innerHTML = `
+                    <div class="wheel-header">
+                        <div>
+                            <div class="wheel-brand">${wheel.brand}</div>
+                            <div class="wheel-model">${wheel.model}</div>
+                        </div>
+                    </div>
+                    <ul class="specs-list">
+                        <li class="spec-item">
+                            <span class="spec-label">Platform</span>
+                            <span class="spec-value">${platformStr}</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Rotation Angle</span>
+                            <span class="spec-value">${wheel.rotation}</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Force Feedback</span>
+                            <span class="spec-value">${wheel.ff}</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Pedals</span>
+                            <span class="spec-value">${wheel.pedals}</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Buttons</span>
+                            <span class="spec-value">${wheel.buttons}</span>
+                        </li>
+                        <li class="spec-item">
+                            <span class="spec-label">Shifter</span>
+                            <span class="spec-value">${wheel.shifter}</span>
+                        </li>
+                    </ul>
+                    <div class="price">
+                        <div class="price-label">Approximate Price</div>
+                        <div class="price-value">$${wheel.price}</div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            updateFilterCounts();
+            applyFilters();
+        }
+
+        // Update filter counts
+        function updateFilterCounts() {
+            // Brand counts
+            document.getElementById('count-logitech').textContent = `(${wheels.filter(w => w.brand === 'Logitech').length})`;
+            document.getElementById('count-thrustmaster').textContent = `(${wheels.filter(w => w.brand === 'Thrustmaster').length})`;
+            document.getElementById('count-fanatec').textContent = `(${wheels.filter(w => w.brand === 'Fanatec').length})`;
+            document.getElementById('count-moza').textContent = `(${wheels.filter(w => w.brand === 'Moza').length})`;
+            document.getElementById('count-simagic').textContent = `(${wheels.filter(w => w.brand === 'Simagic').length})`;
+            document.getElementById('count-hori').textContent = `(${wheels.filter(w => w.brand === 'Hori').length})`;
+
+            // Platform counts
+            document.getElementById('count-pc').textContent = `(${wheels.filter(w => w.platform.includes('PC')).length})`;
+            document.getElementById('count-ps').textContent = `(${wheels.filter(w => w.platform.includes('PlayStation')).length})`;
+            document.getElementById('count-xbox').textContent = `(${wheels.filter(w => w.platform.includes('Xbox')).length})`;
+
+            // Price counts
+            document.getElementById('count-budget').textContent = `(${wheels.filter(w => w.price >= 100 && w.price < 200).length})`;
+            document.getElementById('count-mid').textContent = `(${wheels.filter(w => w.price >= 200 && w.price < 400).length})`;
+            document.getElementById('count-high').textContent = `(${wheels.filter(w => w.price >= 400).length})`;
+
+            // FF counts
+            document.getElementById('count-gear').textContent = `(${wheels.filter(w => w.ff === 'Gear-Driven').length})`;
+            document.getElementById('count-belt').textContent = `(${wheels.filter(w => w.ff === 'Belt-Driven').length})`;
+            document.getElementById('count-direct').textContent = `(${wheels.filter(w => w.ff === 'Direct Drive').length})`;
+        }
+
+        // Apply filters
+        function applyFilters() {
+            // Get selected filters
+            const selectedBrands = Array.from(document.querySelectorAll('input[id^="brand-"]:checked')).map(cb => cb.value);
+            const selectedPlatforms = Array.from(document.querySelectorAll('input[id^="platform-"]:checked')).map(cb => cb.value);
+            const selectedPriceRanges = Array.from(document.querySelectorAll('input[id^="price-"]:checked')).map(cb => cb.value);
+            const selectedFF = Array.from(document.querySelectorAll('input[id^="ff-"]:checked')).map(cb => cb.value);
+
+            // Filter cards
+            const cards = document.querySelectorAll('.wheel-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const brand = card.dataset.brand;
+                const platforms = card.dataset.platform.split(',');
+                const price = parseInt(card.dataset.price);
+                const ff = card.dataset.ff;
+
+                // If no filters selected in a category, show all for that category
+                const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(brand);
+                const platformMatch = selectedPlatforms.length === 0 || selectedPlatforms.some(p => platforms.includes(p));
+                
+                // Check price filter
+                let priceMatch = selectedPriceRanges.length === 0;
+                if (!priceMatch) {
+                    priceMatch = selectedPriceRanges.some(range => {
+                        if (range === 'budget') return price >= 100 && price < 200;
+                        if (range === 'mid') return price >= 200 && price < 400;
+                        if (range === 'high') return price >= 400;
+                        return false;
+                    });
+                }
+
+                const ffMatch = selectedFF.length === 0 || selectedFF.includes(ff);
+
+                // Show/hide card - must match ALL active filter categories
+                if (brandMatch && platformMatch && priceMatch && ffMatch) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            // Update results count
+            document.getElementById('results-count').textContent = visibleCount;
+        }
+
+        // Event listeners for filters
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', applyFilters);
+        });
+
+        // Clear filters button
+        document.getElementById('clear-filters').addEventListener('click', () => {
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            applyFilters();
+        });
+
+        // Initialize
+        renderWheels();
+    </script>
+</body>
+</html>
