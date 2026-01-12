@@ -1632,6 +1632,86 @@
                 transform: scale(1);
             }
         }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            color: var(--accent-primary);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .footer-section p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary);
+            transform: translateX(5px);
+        }
+
+        .footer-links a::before {
+            content: '→';
+            color: var(--accent-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover::before {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        .footer-bottom a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -2887,5 +2967,44 @@
 
         console.log('Racing Wheel Tester initialized');
     </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About Wheel Tester</h3>
+                <p>Test and diagnose your racing wheel with our professional diagnostic tool. Check steering, pedals, buttons, and shifters in real-time.</p>
+                <p>Compatible with all major racing wheel brands including Logitech, Thrustmaster, Fanatec, and more.</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="showTab('tester'); return false;">Wheel Tester</a></li>
+                    <li><a href="#" onclick="showTab('library'); return false;">Wheel Library</a></li>
+                    <li><a href="#" onclick="document.getElementById('report-btn')?.click(); return false;">Report Problem</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="mailto:support@wheeltester.com">📧 Email Support</a></li>
+                    <li><a href="mailto:contact@wheeltester.com">📬 Contact Us</a></li>
+                    <li><a href="#" onclick="document.getElementById('report-btn')?.click(); return false;">🐛 Report Bug</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><strong>Email:</strong><br><a href="mailto:contact@wheeltester.com" style="color: var(--accent-primary);">contact@wheeltester.com</a></p>
+                <p><strong>Support:</strong><br><a href="mailto:support@wheeltester.com" style="color: var(--accent-primary);">support@wheeltester.com</a></p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Wheel Tester. All rights reserved. | <a href="mailto:contact@wheeltester.com">Contact</a> | <a href="mailto:support@wheeltester.com">Support</a></p>
+        </div>
+    </footer>
 </body>
 </html>
