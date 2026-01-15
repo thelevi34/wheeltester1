@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wheel Tester</title>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/4RQMbgqx/icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://i.ibb.co/4RQMbgqx/icon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="https://i.ibb.co/4RQMbgqx/icon.png">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/4RQMbgqx/icon.png">
     <!-- EmailJS Library -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -87,45 +91,51 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 40px;
-            height: 70px;
+            height: 100px;
             position: relative;
         }
 
         .nav-header {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 15px;
         }
 
         .nav-logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 0px;
             text-decoration: none;
             position: relative;
             padding: 8px 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .nav-logo::before {
-            content: '';
-            position: absolute;
-            left: -10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 0;
-            background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
-            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 2px;
+        .nav-logo-img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
         }
 
-        .nav-logo:hover::before {
-            height: 100%;
+        .nav-logo:hover .nav-logo-img {
+            transform: scale(1.1) rotate(5deg);
         }
 
-        .nav-logo:hover {
-            transform: translateX(5px);
+        .nav-logo-text {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            white-space: nowrap;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-left: -30px;
+        }
+
+        .nav-logo-text .highlight {
+            color: var(--accent-primary);
+            font-weight: 300;
+            letter-spacing: 2px;
         }
 
         .nav-logo-text {
@@ -1636,31 +1646,34 @@
         /* Footer */
         footer {
             background: var(--bg-secondary);
-            border-top: 1px solid var(--border-color);
-            padding: 40px 20px 20px;
-            margin-top: 60px;
+            border-top: 2px solid var(--border-color);
+            padding: 50px 20px 30px;
+            margin-top: 80px;
         }
 
         .footer-container {
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 30px;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 40px;
         }
 
         .footer-section h3 {
             color: var(--accent-primary);
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .footer-section p {
             color: var(--text-secondary);
             line-height: 1.8;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
         }
 
         .footer-links {
@@ -1668,16 +1681,17 @@
         }
 
         .footer-links li {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .footer-links a {
             color: var(--text-secondary);
             text-decoration: none;
             transition: all 0.3s ease;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-size: 0.95rem;
         }
 
         .footer-links a:hover {
@@ -1685,20 +1699,9 @@
             transform: translateX(5px);
         }
 
-        .footer-links a::before {
-            content: '→';
-            color: var(--accent-primary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .footer-links a:hover::before {
-            opacity: 1;
-        }
-
         .footer-bottom {
             text-align: center;
-            padding-top: 20px;
+            padding-top: 30px;
             border-top: 1px solid var(--border-color);
             color: var(--text-muted);
             font-size: 0.9rem;
@@ -1707,10 +1710,25 @@
         .footer-bottom a {
             color: var(--accent-primary);
             text-decoration: none;
+            margin: 0 10px;
         }
 
         .footer-bottom a:hover {
             text-decoration: underline;
+        }
+
+        @media (max-width: 1024px) {
+            .footer-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
         }
     </style>
 </head>
@@ -1720,6 +1738,7 @@
         <div class="nav-container">
             <div class="nav-header">
                 <a href="index.html" class="nav-logo">
+                    <img src="https://i.ibb.co/gLLbpFH3/Gemini-Generated-Image-75dh7n75dh7n75dh-1-1-imgupscaler-ai-General-16-K.png" alt="Wheel Tester Logo" class="nav-logo-img">
                     <span class="nav-logo-text">WHEEL<span class="highlight">TESTER</span></span>
                 </a>
                 <div class="nav-links">
@@ -2022,60 +2041,6 @@
             </form>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer style="background: var(--bg-secondary); margin-top: 50px; padding: 40px 20px; border-top: 2px solid var(--border-color);">
-        <div style="max-width: 1400px; margin: 0 auto;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 30px;">
-                <!-- About Section -->
-                <div>
-                    <h3 style="color: var(--accent-primary); margin-bottom: 15px; font-size: 1.2rem;">About Wheel Tester</h3>
-                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem;">
-                        Professional racing wheel diagnostic tool for testing and calibrating all major racing wheels including Logitech, Thrustmaster, Fanatec and more. Test all inputs, buttons, pedals, and shifter functionality.
-                    </p>
-                </div>
-                
-                <!-- Supported Devices -->
-                <div>
-                    <h3 style="color: var(--accent-primary); margin-bottom: 15px; font-size: 1.2rem;">Supported Devices</h3>
-                    <ul style="list-style: none; padding: 0; color: var(--text-secondary); line-height: 2;">
-                        <li>✓ Logitech (G29, G920, G923, G27, G25)</li>
-                        <li>✓ Thrustmaster (T300, T500, TX, etc.)</li>
-                        <li>✓ Fanatec (CSL, ClubSport, etc.)</li>
-                        <li>✓ And other compatible wheels</li>
-                    </ul>
-                </div>
-                
-                <!-- Features -->
-                <div>
-                    <h3 style="color: var(--accent-primary); margin-bottom: 15px; font-size: 1.2rem;">Features</h3>
-                    <ul style="list-style: none; padding: 0; color: var(--text-secondary); line-height: 2;">
-                        <li>✓ Real-time input testing</li>
-                        <li>✓ 900° steering rotation</li>
-                        <li>✓ 3-pedal support</li>
-                        <li>✓ H-pattern shifter (7 gears)</li>
-                        <li>✓ All buttons & D-pad</li>
-                        <li>✓ Rating system</li>
-                    </ul>
-                </div>
-                
-                <!-- Quick Links -->
-                <div>
-                    <h3 style="color: var(--accent-primary); margin-bottom: 15px; font-size: 1.2rem;">Quick Links</h3>
-                    <ul style="list-style: none; padding: 0; line-height: 2;">
-                        <li><a href="g29-wheel-tester (6).html" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-primary)'" onmouseout="this.style.color='var(--text-secondary)'">Wheel Tester</a></li>
-                        <li><a href="wheel-library.html" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-primary)'" onmouseout="this.style.color='var(--text-secondary)'">Wheel Library</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Copyright -->
-            <div style="text-align: center; padding-top: 30px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.9rem;">
-                <p>© 2024 WheelTester. Professional Racing Wheel Diagnostic Tool.</p>
-                <p style="margin-top: 10px;">Made for sim racing enthusiasts worldwide 🏁</p>
-            </div>
-        </div>
-    </footer>
 
     <script>
         // ========================================
@@ -2974,36 +2939,32 @@
             <div class="footer-section">
                 <h3>About Wheel Tester</h3>
                 <p>Test and diagnose your racing wheel with our professional diagnostic tool. Check steering, pedals, buttons, and shifters in real-time.</p>
-                <p>Compatible with all major racing wheel brands including Logitech, Thrustmaster, Fanatec, and more.</p>
+                <p>Compatible with all major racing wheel brands including Logitech, Thrustmaster, Fanatec, Moza, Simagic, and more.</p>
             </div>
 
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <ul class="footer-links">
-                    <li><a href="#" onclick="showTab('tester'); return false;">Wheel Tester</a></li>
-                    <li><a href="#" onclick="showTab('library'); return false;">Wheel Library</a></li>
-                    <li><a href="#" onclick="document.getElementById('report-btn')?.click(); return false;">Report Problem</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h3>Support</h3>
-                <ul class="footer-links">
-                    <li><a href="mailto:support@wheeltester.com">📧 Email Support</a></li>
-                    <li><a href="mailto:contact@wheeltester.com">📬 Contact Us</a></li>
-                    <li><a href="#" onclick="document.getElementById('report-btn')?.click(); return false;">🐛 Report Bug</a></li>
+                    <li><a href="index.html">🎮 Wheel Tester</a></li>
+                    <li><a href="wheel-library.html">📚 Wheel Library</a></li>
+                    <li><a href="#report">🐛 Report Problem</a></li>
+                    <li><a href="mailto:support@wheeltester.com">💬 Get Support</a></li>
                 </ul>
             </div>
 
             <div class="footer-section">
                 <h3>Contact</h3>
-                <p><strong>Email:</strong><br><a href="mailto:contact@wheeltester.com" style="color: var(--accent-primary);">contact@wheeltester.com</a></p>
-                <p><strong>Support:</strong><br><a href="mailto:support@wheeltester.com" style="color: var(--accent-primary);">support@wheeltester.com</a></p>
+                <p style="margin-bottom: 15px;">For any inquiries or support:</p>
+                <p><a href="mailto:contact@wheeltester.com" style="color: var(--accent-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600;">📧 contact@wheeltester.com</a></p>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2025 Wheel Tester. All rights reserved. | <a href="mailto:contact@wheeltester.com">Contact</a> | <a href="mailto:support@wheeltester.com">Support</a></p>
+            <p>&copy; 2025 Wheel Tester. All rights reserved.</p>
+            <p>
+                <a href="mailto:contact@wheeltester.com">Contact</a> | 
+                <a href="#report">Report Issue</a>
+            </p>
         </div>
     </footer>
 </body>
