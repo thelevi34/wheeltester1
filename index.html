@@ -2273,7 +2273,23 @@
                 // Add Xbox style class for button colors
                 document.body.classList.add('xbox-style');
             } else if (wheelName.includes('G923')) {
-                wheelName = 'Logitech G923';
+                // Detect G923 Xbox vs PlayStation version
+                const gamepadIdLower = gamepad.id.toLowerCase();
+                console.log('G923 detected - Full ID:', gamepad.id);
+                console.log('Checking for Xbox indicators:', gamepadIdLower.includes('xbox'), gamepadIdLower.includes('xinput'));
+                
+                if (gamepadIdLower.includes('xbox') || gamepadIdLower.includes('xinput')) {
+                    wheelName = 'Logitech G923 (Xbox)';
+                    console.log('G923 Xbox version detected - using G920 layout');
+                    // G923 Xbox uses same layout as G920
+                    hideG920Buttons();
+                    loadXboxButtons();
+                    document.body.classList.add('xbox-style');
+                } else {
+                    wheelName = 'Logitech G923 (PlayStation)';
+                    console.log('G923 PlayStation version detected - using G29 layout');
+                    // G923 PlayStation uses same layout as G29 (default)
+                }
             } else if (wheelName.includes('G27')) {
                 wheelName = 'Logitech G27';
             } else if (wheelName.includes('G25')) {
@@ -2467,9 +2483,13 @@
             const gamepads = navigator.getGamepads();
             const gamepad = gamepads[gamepadIndex];
             const wheelId = gamepad ? gamepad.id : '';
+            const wheelIdLower = wheelId.toLowerCase();
+            
+            // G923 Xbox behaves like G920, G923 PS behaves like G29
+            const isG923Xbox = wheelId.includes('G923') && (wheelIdLower.includes('xbox') || wheelIdLower.includes('xinput'));
             const isG29Family = wheelId.includes('G29') || wheelId.includes('G27') || 
-                               wheelId.includes('G25') || wheelId.includes('G923');
-            const isG920 = wheelId.includes('G920');
+                               wheelId.includes('G25') || (wheelId.includes('G923') && !isG923Xbox);
+            const isG920 = wheelId.includes('G920') || isG923Xbox;
             
             // Button to gear mapping - ONLY shifter buttons
             const buttonToGear = {
@@ -2638,15 +2658,17 @@
                 }
 
                 // Detect wheel type for correct pedal mapping
-                const isG920 = gamepad.id.includes('G920');
+                const gamepadIdLower = gamepad.id.toLowerCase();
+                const isG920 = gamepad.id.includes('G920') || 
+                              (gamepad.id.includes('G923') && (gamepadIdLower.includes('xbox') || gamepadIdLower.includes('xinput')));
                 const isThrustmaster = gamepad.id.toLowerCase().includes('thrustmaster') ||
                                       gamepad.id.includes('T300') || gamepad.id.includes('T150') ||
                                       gamepad.id.includes('TMX') || gamepad.id.includes('T248') ||
                                       gamepad.id.includes('T-GT') || gamepad.id.includes('TS-XW');
                 
                 // Update Pedals - CORRECTED MAPPING
-                // G29/G27/G25: Clutch = axis 1, Accelerator = axis 2, Brake = axis 5
-                // G920: Clutch = axis 1, Brake = axis 2, Accelerator = axis 5
+                // G29/G27/G25/G923 PS: Clutch = axis 1, Accelerator = axis 2, Brake = axis 5
+                // G920/G923 Xbox: Clutch = axis 1, Brake = axis 2, Accelerator = axis 5
                 // Thrustmaster: Brake = axis 1, Accelerator = axis 2, Clutch = axis 3
                 
                 if (isThrustmaster) {
@@ -2779,7 +2801,9 @@
             }
 
             // Detect wheel type for correct pedal mapping
-            const isG920 = gamepad.id.includes('G920');
+            const gamepadIdLower = gamepad.id.toLowerCase();
+            const isG920 = gamepad.id.includes('G920') || 
+                          (gamepad.id.includes('G923') && (gamepadIdLower.includes('xbox') || gamepadIdLower.includes('xinput')));
             const isThrustmaster = gamepad.id.toLowerCase().includes('thrustmaster') ||
                                   gamepad.id.includes('T300') || gamepad.id.includes('T150') ||
                                   gamepad.id.includes('TMX') || gamepad.id.includes('T248') ||
@@ -2959,7 +2983,7 @@
 
         // Check for already connected gamepads on load
         window.addEventListener('load', () => {
-            // Load images from imagePaths
+            // Load images from imagePaths FIRST
             loadImages();
             
             // Look for a racing wheel among all connected devices
@@ -2982,6 +3006,14 @@
                     
                     if (isWheel) {
                         onGamepadConnected({ gamepad: gamepads[i] });
+                        
+                        // If G920, reload Xbox buttons AFTER loadImages
+                        if (gamepadId.includes('g920')) {
+                            setTimeout(() => {
+                                loadXboxButtons();
+                            }, 100);
+                        }
+                        
                         wheelFound = true;
                         break; // Stop after finding the first wheel
                     }
